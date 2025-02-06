@@ -12,13 +12,12 @@ function randomName() {
 }
 
 async function createAdminUser() {
-  let user = { password: 'toomanysecrets', roles: [{ role: Role.Admin }] };
+  let user = { name: 'admin', email: 'admin@admin.com', password: 'toomanysecrets', roles: [{ role: Role.Admin }] };
   user.name = randomName();
   user.email = user.name + '@admin.com';
 
   user = await DB.addUser(user);
-  auth = setAuthUser(user);
-  return { ...user, password: 'toomanysecrets', token: auth };
+  return { ...user, password: 'toomanysecrets' };
 }
 
 beforeAll(async () => {
@@ -57,13 +56,17 @@ test('logout-fail', async () => {
   const logoutRes = await request(app).delete('/api/auth').send(testUser);
   expect(logoutRes.status).toBe(401);
 });
-/*
+
 test('update-user', async () => {
-  user = createAdminUser();
-  const updateRes = await request(app).put('/api/auth').set('Authorization', `Bearer ${user.body.token}`).send(user);
+  const testAdmin = await createAdminUser();
+  const loginRes = await request(app).put('/api/auth').send(testAdmin);
+  expect(loginRes.status).toBe(200);
+  const auth = loginRes.body.token;
+  const uid = loginRes.body.user.id;
+  const updateRes = await request(app).put(`/api/auth/${uid}`).set('Authorization', `Bearer ${auth}`).send(testAdmin);
   expect(updateRes.status).toBe(200);
 });
-*/
+
 function expectValidJwt(potentialJwt) {
   expect(potentialJwt).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
 }

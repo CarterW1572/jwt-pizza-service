@@ -39,9 +39,9 @@ test('add-menu-item', async () => {
   testAdmin = await createAdminUser();
   const loginRes = await request(app).put('/api/auth').send(testAdmin);
   expect(loginRes.status).toBe(200);
-  auth = loginRes.body.token;
-  iname = randomName();
-  iprice = randomNum();
+  let auth = loginRes.body.token;
+  let iname = randomName();
+  let iprice = randomNum();
   const item = { title: `${iname}`, description: 'No topping, no sauce, just carbs', image: 'pizza9.png', price: `${iprice}` }
   const addMenuItemRes = await request(app).put('/api/order/menu').set('Authorization', `Bearer ${auth}`).send(item);
   expect(addMenuItemRes.status).toBe(200);
@@ -49,4 +49,4 @@ test('add-menu-item', async () => {
 
 function expectValidJwt(potentialJwt) {
     expect(potentialJwt).toMatch(/^[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*\.[a-zA-Z0-9\-_]*$/);
-  }
+}

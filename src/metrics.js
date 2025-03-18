@@ -4,7 +4,7 @@ const requests = {};
 
 const os = require('os');
 
-function getCpuUsagePercentage() {
+/*function getCpuUsagePercentage() {
   const cpuUsage = os.loadavg()[0] / os.cpus().length;
   return cpuUsage.toFixed(2) * 100;
 }
@@ -15,7 +15,7 @@ function getMemoryUsagePercentage() {
   const usedMemory = totalMemory - freeMemory;
   const memoryUsage = (usedMemory / totalMemory) * 100;
   return memoryUsage.toFixed(2);
-}
+}*/
 
 function track(endpoint) {
   return (req, res, next) => {
@@ -76,6 +76,7 @@ function sendMetricToGrafana(metricName, metricValue, attributes) {
   })
     .then((response) => {
       if (!response.ok) {
+        console.log(timer);
         console.error('Failed to push metrics data to Grafana');
       } else {
         console.log(`Pushed ${metricName}`);
